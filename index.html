@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RExchange — BITS Bangalore Student-to-Student Campus Marketplace</title>
+  <meta name="description" content="Exclusive student-to-student exchange platform for Bangalore Institute of Technology & Sciences (BITS) to buy, sell, exchange, and giveaway campus resources." />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              emerald: '#10b981',
+              cyan: '#06b6d4',
+              dark: '#07090e',
+              card: '#0d121d',
+              purple: '#8b5cf6'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            heading: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-[#07090e] text-slate-100 min-h-screen relative selection:bg-emerald-500 selection:text-black">
+  <!-- Interactive Ambient Canvas Background -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="ambient-glow-1"></div>
+  <div class="ambient-glow-2"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-auto"></div>
+
+  <!-- Top Campus Community Bar (Single College Focus) -->
+  <div class="relative z-30 bg-slate-950/90 border-b border-white/5 backdrop-blur-md text-xs py-2 px-4">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5">
+        <span class="flex items-center gap-1.5 text-emerald-400 font-bold tracking-wide">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 live-pulse"></span>
+          Campus Exclusive Network:
+        </span>
+        <span class="text-slate-100 font-semibold">Bangalore Institute of Technology & Sciences (BITS)</span>
+        <span class="text-slate-600 hidden md:inline">•</span>
+        <span class="text-slate-400 hidden md:flex items-center gap-1">
+          <i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-400"></i> Bangalore, Karnataka
+        </span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <span class="text-emerald-400/90 font-mono text-[11px] flex items-center gap-1.5 bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-800/60">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>@bits-bangalore.edu.in Verified</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation Bar -->
+  <header class="sticky top-0 z-30 bg-[#07090e]/85 backdrop-blur-xl border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-18 py-3">
+        
+        <!-- Logo & Brand -->
+        <div class="flex items-center gap-8">
+          <a href="javascript:void(0)" onclick="window.REXCHANGE.openTab('home')" class="flex items-center gap-3 group">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-400 p-[1.5px] group-hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] transition-all">
+              <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                <!-- Abstract Arrows Exchange Logo SVG -->
+                <svg class="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m7 16-4-4 4-4"/>
+                  <path d="M3 12h14a4 4 0 0 1 4 4v1"/>
+                  <path d="m17 8 4 4-4 4"/>
+                  <path d="M21 12H7a4 4 0 0 1-4-4V7"/>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-heading font-extrabold text-2xl tracking-tight bg-gradient-to-r from-white via-slate-100 to-emerald-300 bg-clip-text text-transparent">
+                  RExchange
+                </span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 border border-emerald-800/80 text-emerald-300 font-mono font-bold">
+                  BITS
+                </span>
+              </div>
+              <span class="hidden md:block text-[10px] font-mono tracking-widest text-emerald-400/80 uppercase">Exchange. Share. Connect.</span>
+            </div>
+          </a>
+
+          <!-- Desktop Navigation Links -->
+          <nav class="hidden lg:flex items-center gap-1">
+            <button onclick="window.REXCHANGE.openTab('home')" data-tab="home" class="nav-link px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-emerald-400 bg-emerald-500/10 border border-emerald-500/30">
+              Home
+            </button>
+            <button onclick="window.REXCHANGE.openTab('marketplace')" data-tab="marketplace" class="nav-link px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent">
+              Marketplace
+            </button>
+            <button onclick="window.REXCHANGE.openTab('categories')" data-tab="categories" class="nav-link px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent">
+              Categories
+            </button>
+            <button onclick="window.REXCHANGE.openTab('events')" data-tab="events" class="nav-link px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent">
+              Campus Events
+            </button>
+            <button onclick="window.REXCHANGE.openTab('campus')" data-tab="campus" class="nav-link px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Campus Pulse
+            </button>
+            <button onclick="window.REXCHANGE.openTab('how-it-works')" data-tab="how-it-works" class="nav-link px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent">
+              How It Works
+            </button>
+            <button onclick="window.REXCHANGE.openTab('trust')" data-tab="trust" class="nav-link px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent">
+              Trust & Safety
+            </button>
+          </nav>
+        </div>
+
+        <!-- Right Action Buttons -->
+        <div class="flex items-center gap-3">
+          
+          <!-- Dynamic Auth & User Profile Container -->
+          <div id="nav-auth-container" class="flex items-center gap-2">
+            <!-- Injected via app.js -->
+          </div>
+
+          <!-- List An Item Button -->
+          <button onclick="window.REXCHANGE.openCreateListingModal()" 
+                  class="neon-btn-primary px-4 py-2.5 rounded-xl text-xs font-extrabold flex items-center gap-2 shadow-lg">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>List an Item</span>
+          </button>
+
+          <!-- Mobile Menu Trigger -->
+          <button onclick="document.getElementById('mobile-drawer').classList.toggle('hidden')" 
+                  class="lg:hidden p-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-300">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-drawer" class="hidden lg:hidden border-t border-slate-800 bg-slate-950/95 px-4 py-4 space-y-2">
+      <button onclick="window.REXCHANGE.openTab('home'); document.getElementById('mobile-drawer').classList.add('hidden')" class="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-200 hover:bg-slate-900">Home</button>
+      <button onclick="window.REXCHANGE.openTab('marketplace'); document.getElementById('mobile-drawer').classList.add('hidden')" class="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-200 hover:bg-slate-900">Marketplace</button>
+      <button onclick="window.REXCHANGE.openTab('categories'); document.getElementById('mobile-drawer').classList.add('hidden')" class="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-200 hover:bg-slate-900">Categories</button>
+      <button onclick="window.REXCHANGE.openTab('events'); document.getElementById('mobile-drawer').classList.add('hidden')" class="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-200 hover:bg-slate-900">Campus Events</button>
+      <button onclick="window.REXCHANGE.openTab('campus'); document.getElementById('mobile-drawer').classList.add('hidden')" class="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-200 hover:bg-slate-900">Campus Pulse</button>
+      <button onclick="window.REXCHANGE.openTab('dashboard'); document.getElementById('mobile-drawer').classList.add('hidden')" class="w-full text-left px-3 py-2 rounded-lg text-sm text-emerald-400 font-semibold hover:bg-slate-900">Student Dashboard</button>
+      <button onclick="window.REXCHANGE.openTab('how-it-works'); document.getElementById('mobile-drawer').classList.add('hidden')" class="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-200 hover:bg-slate-900">How It Works</button>
+      <button onclick="window.REXCHANGE.openTab('trust'); document.getElementById('mobile-drawer').classList.add('hidden')" class="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-200 hover:bg-slate-900">Trust & Safety</button>
+      <div class="pt-2 border-t border-slate-800">
+        <button onclick="window.REXCHANGE.openAuthModal('signin'); document.getElementById('mobile-drawer').classList.add('hidden')" class="w-full text-left px-3 py-2 rounded-lg text-sm text-emerald-400 font-bold hover:bg-slate-900">
+          Sign In / Register (BITS Portal)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN VIEW CONTENT CONTAINER -->
+  <main class="relative z-10 min-h-[calc(100vh-140px)]">
+
+    <!-- ========================================================================= -->
+    <!-- 1. HOMEPAGE VIEW (#view-home) -->
+    <!-- ========================================================================= -->
+    <div id="view-home" class="view-section">
+      
+      <!-- HERO SECTION -->
+      <section class="relative pt-12 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
+        <div class="text-center max-w-3xl mx-auto space-y-6">
+          
+          <!-- Pill Tag -->
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 text-xs font-semibold backdrop-blur-md">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 live-pulse"></span>
+            <span>Bangalore Institute of Technology & Sciences (BITS)</span>
+            <span class="text-slate-500">•</span>
+            <span class="text-slate-300 font-normal">Student Exchange Portal</span>
+          </div>
+
+          <!-- Hero Headline -->
+          <h1 class="font-heading font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-tight">
+            Your Campus. <br/>
+            <span class="bg-gradient-to-r from-emerald-400 via-cyan-300 to-teal-200 bg-clip-text text-transparent text-glow-emerald">
+              Your Community.
+            </span> <br/>
+            Your Exchange.
+          </h1>
+
+          <!-- Supporting Text -->
+          <p class="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            Buy, sell, share and discover useful resources from students around BITS Bangalore. Turn unused textbooks, tech accessories, fest passes, and notes into opportunities.
+          </p>
+
+          <!-- Hero Search Bar -->
+          <div class="max-w-xl mx-auto pt-2">
+            <div class="glass-panel p-2 rounded-2xl border border-emerald-500/30 shadow-2xl flex items-center gap-3">
+              <div class="pl-3 text-slate-400">
+                <i data-lucide="search" class="w-5 h-5 text-emerald-400"></i>
+              </div>
+              <input type="text" 
+                     id="hero-search-input"
+                     placeholder="Search textbooks, tickets, headphones, notes..." 
+                     class="w-full bg-transparent border-none text-slate-100 text-sm focus:outline-none placeholder:text-slate-500" />
+              <button onclick="const q = document.getElementById('hero-search-input').value; document.getElementById('search-input').value = q; window.REXCHANGE.openTab('marketplace');" 
+                      class="neon-btn-primary px-5 py-2.5 rounded-xl text-xs font-bold flex-shrink-0 flex items-center gap-1.5">
+                <span>Search</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Hero Action Buttons -->
+          <div class="flex flex-wrap items-center justify-center gap-4 pt-4">
+            <button onclick="window.REXCHANGE.openTab('marketplace')" 
+                    class="neon-btn-primary px-7 py-3.5 rounded-xl text-sm font-bold flex items-center gap-2.5">
+              <i data-lucide="compass" class="w-4 h-4"></i>
+              <span>Explore Marketplace</span>
+            </button>
+            <button onclick="window.REXCHANGE.openCreateListingModal()" 
+                    class="neon-btn-secondary px-7 py-3.5 rounded-xl text-sm font-bold flex items-center gap-2.5">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>List an Item</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- QUICK LIVE METRICS -->
+        <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          <div class="glass-card p-5 rounded-2xl text-center border border-white/5 group hover:border-emerald-500/40 transition-all">
+            <div class="font-heading font-extrabold text-2xl sm:text-3xl text-emerald-400 mb-1">2,480+</div>
+            <div class="text-xs text-slate-400 font-medium">BITS Enrolled Students</div>
+          </div>
+          <div class="glass-card p-5 rounded-2xl text-center border border-white/5 group hover:border-cyan-500/40 transition-all">
+            <div class="font-heading font-extrabold text-2xl sm:text-3xl text-cyan-400 mb-1">1,320+</div>
+            <div class="text-xs text-slate-400 font-medium">Active Campus Listings</div>
+          </div>
+          <div class="glass-card p-5 rounded-2xl text-center border border-white/5 group hover:border-purple-500/40 transition-all">
+            <div class="font-heading font-extrabold text-2xl sm:text-3xl text-purple-400 mb-1">680+</div>
+            <div class="text-xs text-slate-400 font-medium">Successful Exchanges</div>
+          </div>
+          <div class="glass-card p-5 rounded-2xl text-center border border-white/5 group hover:border-amber-500/40 transition-all">
+            <div class="font-heading font-extrabold text-2xl sm:text-3xl text-amber-400 mb-1">42</div>
+            <div class="text-xs text-slate-400 font-medium">Campus Events & Fests</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BROWSE CATEGORIES SECTION -->
+      <section class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+          <div>
+            <span class="text-xs font-mono uppercase tracking-widest text-emerald-400 font-semibold">Campus Categories</span>
+            <h2 class="font-heading font-bold text-2xl sm:text-3xl text-slate-100 mt-1">
+              Explore What BITS Students Are Sharing
+            </h2>
+          </div>
+          <button onclick="window.REXCHANGE.openTab('categories')" class="text-xs text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 self-start sm:self-auto">
+            View All 7 Categories <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div id="home-categories-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS 3-STEP SECTION -->
+      <section class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="text-xs font-mono uppercase tracking-widest text-emerald-400 font-semibold">Effortless & Safe</span>
+          <h2 class="font-heading font-bold text-2xl sm:text-3xl text-slate-100 mt-1">
+            How RExchange Works in 3 Steps
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-400 mt-2">
+            Engineered exclusively for university campus communities with direct peer verification.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+          <!-- Step 1 -->
+          <div class="glass-card p-6 rounded-2xl border border-slate-800 relative group hover:border-emerald-500/40 transition-all">
+            <div class="text-4xl font-extrabold font-mono text-emerald-500/20 group-hover:text-emerald-500/40 transition-colors mb-4">01</div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
+              <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-heading font-bold text-lg text-slate-100 mb-2">List</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Post textbooks, lab kits, calculators, electronics, notes, or tickets you no longer need. Set a student price, barter wish, or give it away for free.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="glass-card p-6 rounded-2xl border border-slate-800 relative group hover:border-cyan-500/40 transition-all">
+            <div class="text-4xl font-extrabold font-mono text-cyan-500/20 group-hover:text-cyan-500/40 transition-colors mb-4">02</div>
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-4">
+              <i data-lucide="message-circle" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-heading font-bold text-lg text-slate-100 mb-2">Connect</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Receive offers from fellow verified classmates on campus. Discuss details and negotiate directly via instant student chat.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="glass-card p-6 rounded-2xl border border-slate-800 relative group hover:border-purple-500/40 transition-all">
+            <div class="text-4xl font-extrabold font-mono text-purple-500/20 group-hover:text-purple-500/40 transition-colors mb-4">03</div>
+            <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
+              <i data-lucide="handshake" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-heading font-bold text-lg text-slate-100 mb-2">Exchange</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Meet safely during daylight at verified BITS campus meetup points (Library, SAC Cafe, or Quadrangle) to complete the exchange.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CAMPUS PULSE PREVIEW -->
+      <section class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="glass-panel p-8 rounded-3xl border border-emerald-500/20 relative overflow-hidden">
+          <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div class="max-w-xl space-y-4">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-semibold">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Single-College Closed Network
+              </div>
+              <h2 class="font-heading font-extrabold text-2xl sm:text-3xl text-slate-100">
+                Live at Bangalore Institute of Technology & Sciences (BITS)
+              </h2>
+              <p class="text-sm text-slate-300 leading-relaxed">
+                Connect exclusively with verified batchmates and campus seniors. Check out trending swaps, notes, and giveaways in your department right now.
+              </p>
+              <div class="flex flex-wrap gap-3 pt-2">
+                <button onclick="window.REXCHANGE.openTab('campus')" class="neon-btn-primary px-5 py-2.5 rounded-xl text-xs font-bold">
+                  View Campus Pulse
+                </button>
+                <button onclick="window.REXCHANGE.openTab('trust')" class="neon-btn-secondary px-5 py-2.5 rounded-xl text-xs font-bold">
+                  Trust & Safety Guidelines
+                </button>
+              </div>
+            </div>
+
+            <!-- Mini Live Stream Box -->
+            <div class="w-full lg:w-96 glass-card p-5 rounded-2xl border border-slate-700/60">
+              <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
+                <span class="text-xs font-bold text-slate-200 flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 live-pulse"></span>
+                  BITS Live Activity
+                </span>
+                <span class="text-[10px] font-mono text-emerald-400">BITS Bangalore</span>
+              </div>
+              <div class="space-y-2.5 text-xs">
+                <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800/80 flex items-start gap-2">
+                  <i data-lucide="repeat" class="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5"></i>
+                  <div>
+                    <div class="text-slate-200 font-medium">DSA Handwritten Notes exchanged</div>
+                    <div class="text-[10px] text-slate-500 font-mono">10m ago • SAC Quad</div>
+                  </div>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800/80 flex items-start gap-2">
+                  <i data-lucide="tag" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                  <div>
+                    <div class="text-slate-200 font-medium">Casio ClassWiz listed for ₹650</div>
+                    <div class="text-[10px] text-slate-500 font-mono">25m ago • Hostel 2</div>
+                  </div>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800/80 flex items-start gap-2">
+                  <i data-lucide="gift" class="w-4 h-4 text-purple-400 flex-shrink-0 mt-0.5"></i>
+                  <div>
+                    <div class="text-slate-200 font-medium">Free Lab Coat claimed by 1st yr</div>
+                    <div class="text-[10px] text-slate-500 font-mono">1h ago • Chem Lab</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 2. MARKETPLACE VIEW (#view-marketplace) -->
+    <!-- ========================================================================= -->
+    <div id="view-marketplace" class="view-section hidden py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      
+      <!-- Marketplace Header & Search -->
+      <div class="mb-8">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 uppercase tracking-wider mb-1">
+              <i data-lucide="store" class="w-3.5 h-3.5"></i> BITS Campus Marketplace
+            </div>
+            <h1 class="font-heading font-extrabold text-3xl text-slate-100">
+              Discover Student Resources
+            </h1>
+          </div>
+          
+          <button onclick="window.REXCHANGE.openCreateListingModal()" class="neon-btn-primary px-5 py-2.5 rounded-xl text-xs font-bold self-start md:self-auto flex items-center gap-2">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i> Post New Resource
+          </button>
+        </div>
+
+        <!-- Filter Controls Container -->
+        <div class="glass-panel p-4 rounded-2xl border border-slate-800 space-y-4">
+          
+          <!-- Top Row: Search & Category & Listing Type -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <!-- Search -->
+            <div class="relative lg:col-span-2">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input type="text" 
+                     id="search-input"
+                     placeholder="Search textbooks, tickets, headphones, notes..." 
+                     class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 transition-colors" />
+            </div>
+
+            <!-- Category Filter -->
+            <div>
+              <select id="filter-category" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                <option value="all">All Categories (7)</option>
+                <option value="events-tickets">🎟 Events & Tickets</option>
+                <option value="essentials">🎒 Essentials</option>
+                <option value="electronic-accessories">🎧 Electronic Accessories</option>
+                <option value="study-materials">📚 Study Materials</option>
+                <option value="notes-resources">📝 Notes & Resources</option>
+                <option value="skills-services">🧑‍💻 Skills & Services</option>
+                <option value="free-giveaways">🎁 Free / Giveaways</option>
+              </select>
+            </div>
+
+            <!-- Listing Type Filter -->
+            <div>
+              <select id="filter-type" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                <option value="all">All Listing Types</option>
+                <option value="sale">⚡ For Sale</option>
+                <option value="exchange">🔄 Student Exchange</option>
+                <option value="free">🎁 Free Giveaway</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Bottom Row: Price Slider & Sort -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-800/80 text-xs">
+            <div class="flex items-center gap-4 w-full sm:w-auto">
+              <span class="text-slate-400 text-xs font-medium whitespace-nowrap">Max Price:</span>
+              <input type="range" id="filter-price-range" min="0" max="3000" step="100" value="3000" class="w-36 accent-emerald-500 cursor-pointer" />
+              <span id="filter-price-val" class="font-mono text-emerald-400 font-bold whitespace-nowrap">₹3,000</span>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+              <div class="flex items-center gap-2">
+                <span class="text-slate-400">Sort:</span>
+                <select id="filter-sort" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none">
+                  <option value="recommended">Recommended</option>
+                  <option value="newest">Recently Added</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                </select>
+              </div>
+
+              <button onclick="window.REXCHANGE.resetFilters()" class="text-slate-400 hover:text-emerald-400 transition-colors p-1.5" title="Reset Filters">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Result Stats Bar -->
+        <div class="flex items-center justify-between mt-4 px-1">
+          <span id="marketplace-result-count" class="text-xs font-mono text-slate-400">Loading listings...</span>
+          <span class="text-xs text-slate-500">📍 Showing listings in Bangalore Institute of Technology & Sciences (BITS)</span>
+        </div>
+      </div>
+
+      <!-- Listings Grid -->
+      <div id="marketplace-listings-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 3. CATEGORIES VIEW (#view-categories) -->
+    <!-- ========================================================================= -->
+    <div id="view-categories" class="view-section hidden py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="text-xs font-mono uppercase tracking-widest text-emerald-400 font-semibold">Campus Taxonomy</span>
+        <h1 class="font-heading font-extrabold text-3xl text-slate-100 mt-1">
+          Explore by Category
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 mt-2">
+          Tailored categories to address every student need inside BITS Bangalore.
+        </p>
+      </div>
+
+      <div id="all-categories-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 4. EVENTS VIEW (#view-events) -->
+    <!-- ========================================================================= -->
+    <div id="view-events" class="view-section hidden py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-widest text-cyan-400 font-semibold">BITS Campus Calendar</span>
+          <h1 class="font-heading font-extrabold text-3xl text-slate-100 mt-1">
+            College Events, Passes & Hackathons
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">
+            Buy extra student fest tickets, hackathon passes, and workshop entries safely from peers.
+          </p>
+        </div>
+
+        <button onclick="window.REXCHANGE.openCreateListingModal()" class="neon-btn-cyan px-5 py-2.5 rounded-xl text-xs font-bold self-start md:self-auto flex items-center gap-2">
+          <i data-lucide="plus" class="w-4 h-4"></i> List an Event Pass
+        </button>
+      </div>
+
+      <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Populated via JavaScript -->
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 5. CAMPUS PULSE / COMMUNITY VIEW (#view-campus) -->
+    <!-- ========================================================================= -->
+    <div id="view-campus" class="view-section hidden py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="mb-8">
+        <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 uppercase tracking-wider mb-1">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 live-pulse"></span> Closed Student Community
+        </div>
+        <h1 class="font-heading font-extrabold text-3xl text-slate-100">
+          BITS Campus Exchange Pulse
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 mt-1">
+          Real-time activity and resources within <strong class="text-slate-200">Bangalore Institute of Technology & Sciences (BITS)</strong>.
+        </p>
+      </div>
+
+      <!-- Live Campus Activity Ticker Box -->
+      <div class="glass-panel p-5 rounded-2xl border border-slate-800 mb-10">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold text-slate-200 flex items-center gap-2">
+            <i data-lucide="radio" class="w-4 h-4 text-emerald-400"></i> Live Activity Feed
+          </span>
+          <span class="text-[11px] font-mono text-emerald-400">2,480 students active</span>
+        </div>
+        <div id="campus-ticker-stream" class="space-y-2">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Trending on Campus Section -->
+      <div class="mb-12">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-heading font-bold text-xl text-slate-100 flex items-center gap-2">
+            <i data-lucide="trending-up" class="w-5 h-5 text-emerald-400"></i> Trending in BITS Hostels & Labs
+          </h2>
+          <button onclick="window.REXCHANGE.openTab('marketplace')" class="text-xs text-emerald-400 hover:underline">Explore All</button>
+        </div>
+        <div id="campus-trending-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Free Giveaways Section -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-heading font-bold text-xl text-slate-100 flex items-center gap-2">
+            <i data-lucide="gift" class="w-5 h-5 text-cyan-400"></i> Free Stuff & Senior Giveaways
+          </h2>
+          <button onclick="window.REXCHANGE.openCategory('free-giveaways')" class="text-xs text-cyan-400 hover:underline">View All Free</button>
+        </div>
+        <div id="campus-free-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 6. HOW IT WORKS VIEW (#view-how-it-works) -->
+    <!-- ========================================================================= -->
+    <div id="view-how-it-works" class="view-section hidden py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-xs font-mono uppercase tracking-widest text-emerald-400 font-semibold">Campus Protocol</span>
+        <h1 class="font-heading font-extrabold text-3xl sm:text-4xl text-slate-100 mt-1">
+          Simple, Safe & Student-First
+        </h1>
+        <p class="text-sm text-slate-400 mt-2">
+          Designed exclusively for BITS Bangalore students to exchange resources safely within campus gates.
+        </p>
+      </div>
+
+      <div class="space-y-8">
+        <!-- Step 1 Detail -->
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 flex flex-col md:flex-row items-center gap-8">
+          <div class="w-20 h-20 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0 text-3xl font-heading font-extrabold">
+            01
+          </div>
+          <div class="space-y-2">
+            <h3 class="font-heading font-bold text-xl text-slate-100">Post What You Don't Need</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              Upload photos, select your department/hostel, pick a category, and specify if you want to sell at a student discount, exchange for another resource, or give away for free.
+            </p>
+            <div class="text-xs text-emerald-400 font-mono flex items-center gap-2 pt-1">
+              <i data-lucide="check" class="w-4 h-4"></i> Takes less than 60 seconds with our instant template presets
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 Detail -->
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 flex flex-col md:flex-row items-center gap-8">
+          <div class="w-20 h-20 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 flex-shrink-0 text-3xl font-heading font-extrabold">
+            02
+          </div>
+          <div class="space-y-2">
+            <h3 class="font-heading font-bold text-xl text-slate-100">Connect via Secure Peer Chat</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              Interested BITS peers reach out through our built-in campus messaging. You can accept cash offers, counter-offer, or discuss trade terms without revealing personal phone numbers.
+            </p>
+            <div class="text-xs text-cyan-400 font-mono flex items-center gap-2 pt-1">
+              <i data-lucide="check" class="w-4 h-4"></i> All students are verified through @bits-bangalore.edu.in domain emails
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 Detail -->
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 flex flex-col md:flex-row items-center gap-8">
+          <div class="w-20 h-20 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 flex-shrink-0 text-3xl font-heading font-extrabold">
+            03
+          </div>
+          <div class="space-y-2">
+            <h3 class="font-heading font-bold text-xl text-slate-100">Exchange at Safe Campus Spots</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              Meet at designated high-visibility areas inside BITS campus (Central Library Lobby, Student Activity Center, or College Cafeteria). Inspect the item, complete the exchange, and rate your peer!
+            </p>
+            <div class="text-xs text-purple-400 font-mono flex items-center gap-2 pt-1">
+              <i data-lucide="check" class="w-4 h-4"></i> Build your student trust rating with every completed trade
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 7. TRUST & SAFETY VIEW (#view-trust) -->
+    <!-- ========================================================================= -->
+    <div id="view-trust" class="view-section hidden py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-xs font-mono uppercase tracking-widest text-emerald-400 font-semibold">Campus Integrity</span>
+        <h1 class="font-heading font-extrabold text-3xl sm:text-4xl text-slate-100 mt-1">
+          Trust & Safety Center
+        </h1>
+        <p class="text-sm text-slate-400 mt-2">
+          How RExchange keeps our BITS Bangalore college marketplace secure, genuine, and scam-free.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <i data-lucide="mail-check" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-slate-100">Verified BITS College Email</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Every seller must confirm their official university email (`@bits-bangalore.edu.in`) and USN to get a verified student badge.
+          </p>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i data-lucide="map-pin" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-slate-100">Designated BITS Campus Meetup Zones</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            We recommend verified high-visibility campus spots (Central Library Quad, Main Atrium, SAC Canteen) for exchanging items during daylight hours.
+          </p>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
+            <i data-lucide="star" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-slate-100">Peer Exchange Reputation Score</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            After every successful swap, both students rate the experience. High ratings unlock priority visibility for new listings.
+          </p>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400">
+            <i data-lucide="shield-alert" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-slate-100">Zero Commercial Spam & Fast Moderation</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Commercial retailers and spammers are strictly blocked. Any suspicious listing can be reported with one click and reviewed by student moderators.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 8. STUDENT DASHBOARD VIEW (#view-dashboard) -->
+    <!-- ========================================================================= -->
+    <div id="view-dashboard" class="view-section hidden py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      
+      <!-- Student Profile Card Header -->
+      <div class="glass-panel p-6 rounded-3xl border border-slate-800 mb-8 relative overflow-hidden">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div class="flex items-center gap-5">
+            <div class="relative">
+              <img id="dash-user-avatar" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80" alt="Student Profile" class="w-20 h-20 rounded-2xl object-cover border-2 border-emerald-500 shadow-xl" />
+              <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center shadow" title="Verified BITS Student">
+                <i data-lucide="check" class="w-3.5 h-3.5 font-bold"></i>
+              </span>
+            </div>
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <h2 id="dash-user-name" class="font-heading font-extrabold text-2xl text-slate-100">Aarav Patel</h2>
+                <span class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300">
+                  BITS Verified Student
+                </span>
+              </div>
+              <div id="dash-user-college" class="text-xs text-slate-300">Bangalore Institute of Technology & Sciences (BITS)</div>
+              <div class="text-xs text-slate-400 flex items-center gap-2">
+                <span id="dash-user-branch">CSE 3rd Year</span>
+                <span>•</span>
+                <span id="dash-user-email" class="font-mono text-slate-500">aarav.patel@bits-bangalore.edu.in</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-slate-800 pt-4 md:pt-0">
+            <div class="text-center px-4 py-2 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div id="dash-user-excount" class="font-heading font-bold text-lg text-emerald-400">12</div>
+              <div class="text-[10px] text-slate-400 uppercase font-mono">Exchanges</div>
+            </div>
+            <div class="text-center px-4 py-2 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div id="dash-user-rep" class="font-heading font-bold text-lg text-amber-400">4.95 ★</div>
+              <div class="text-[10px] text-slate-400 uppercase font-mono">Reputation</div>
+            </div>
+            <button onclick="window.REXCHANGE.openCreateListingModal()" class="neon-btn-primary px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2">
+              <i data-lucide="plus" class="w-4 h-4"></i> Post Item
+            </button>
+          </div>
+        </div>
+
+        <!-- Dashboard Subtabs Navigation -->
+        <div class="flex items-center gap-2 mt-8 pt-4 border-t border-slate-800 overflow-x-auto">
+          <button onclick="window.REXCHANGE.setDashTab('listings')" data-dashtab="listings" class="dash-nav-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all bg-emerald-500/15 text-emerald-400 border border-emerald-500/40">
+            📦 My Listings
+          </button>
+          <button onclick="window.REXCHANGE.setDashTab('saved')" data-dashtab="saved" class="dash-nav-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all text-slate-400 border border-transparent hover:text-slate-200">
+            ❤️ Saved Items
+          </button>
+          <button onclick="window.REXCHANGE.setDashTab('offers')" data-dashtab="offers" class="dash-nav-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all text-slate-400 border border-transparent hover:text-slate-200">
+            🏷 My Offers & Swaps
+          </button>
+          <button onclick="window.REXCHANGE.setDashTab('messages')" data-dashtab="messages" class="dash-nav-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all text-slate-400 border border-transparent hover:text-slate-200">
+            💬 Messages
+          </button>
+          <button onclick="window.REXCHANGE.setDashTab('profile')" data-dashtab="profile" class="dash-nav-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all text-slate-400 border border-transparent hover:text-slate-200">
+            🛡 Trust & College ID
+          </button>
+        </div>
+      </div>
+
+      <!-- DASHBOARD TAB 1: MY LISTINGS -->
+      <div id="dash-view-listings" class="dash-view">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-heading font-bold text-lg text-slate-100">Your Active BITS Campus Listings</h3>
+          <button onclick="window.REXCHANGE.openCreateListingModal()" class="text-xs text-emerald-400 hover:underline">+ New Listing</button>
+        </div>
+        <div id="dash-my-listings-list" class="space-y-3">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- DASHBOARD TAB 2: SAVED ITEMS -->
+      <div id="dash-view-saved" class="dash-view hidden">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-heading font-bold text-lg text-slate-100">Saved Campus Resources</h3>
+        </div>
+        <div id="dash-saved-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- DASHBOARD TAB 3: MY OFFERS -->
+      <div id="dash-view-offers" class="dash-view hidden">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-heading font-bold text-lg text-slate-100">Active Offers & Barter Proposals</h3>
+        </div>
+        <div id="dash-offers-list" class="space-y-3">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- DASHBOARD TAB 4: MESSAGES INBOX -->
+      <div id="dash-view-messages" class="dash-view hidden">
+        <div class="glass-panel rounded-2xl border border-slate-800 overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[500px]">
+          <!-- Contacts Sidebar -->
+          <div class="md:col-span-4 border-r border-slate-800 p-4 space-y-3 bg-slate-950/40">
+            <div class="text-xs font-bold uppercase font-mono tracking-wider text-slate-400 mb-2">Student Conversations</div>
+            <div id="chat-contacts-list" class="space-y-2">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Active Chat Window -->
+          <div class="md:col-span-8 flex flex-col justify-between p-4 bg-slate-900/30">
+            <!-- Header -->
+            <div id="chat-active-name" class="pb-3 border-b border-slate-800">
+              <span class="text-xs text-slate-400">Select a conversation to start chatting.</span>
+            </div>
+
+            <!-- Messages Stream -->
+            <div id="chat-messages-container" class="flex-1 overflow-y-auto py-4 space-y-3 max-h-96">
+              <!-- Populated by JS -->
+            </div>
+
+            <!-- Chat Input -->
+            <div class="pt-3 border-t border-slate-800 flex items-center gap-2">
+              <input type="text" 
+                     id="chat-input-text" 
+                     placeholder="Type your message or proposal..." 
+                     onkeypress="if(event.key==='Enter') window.REXCHANGE.sendMessage()" 
+                     class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500" />
+              <button onclick="window.REXCHANGE.sendMessage()" class="neon-btn-primary p-2.5 rounded-xl text-slate-950 font-bold">
+                <i data-lucide="send" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD TAB 5: PROFILE & TRUST -->
+      <div id="dash-view-profile" class="dash-view hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+            <h3 class="font-heading font-bold text-lg text-slate-100">Student Identity Verification</h3>
+            <div class="p-4 rounded-xl bg-emerald-950/40 border border-emerald-800/60 flex items-center gap-3">
+              <i data-lucide="badge-check" class="w-6 h-6 text-emerald-400 flex-shrink-0"></i>
+              <div>
+                <div class="text-xs font-bold text-emerald-200">Official BITS Email Verified</div>
+                <div id="dash-profile-email" class="text-[11px] text-emerald-400 font-mono">aarav.patel@bits-bangalore.edu.in</div>
+              </div>
+            </div>
+            <div class="space-y-2.5 text-xs text-slate-300">
+              <div class="flex justify-between py-1.5 border-b border-slate-800">
+                <span class="text-slate-400">Student Roll / USN:</span>
+                <span id="dash-profile-usn" class="font-mono font-bold text-slate-200">1BT23CS084</span>
+              </div>
+              <div class="flex justify-between py-1.5 border-b border-slate-800">
+                <span class="text-slate-400">Department:</span>
+                <span id="dash-profile-dept" class="font-medium text-slate-200">Computer Science & Engineering</span>
+              </div>
+              <div class="flex justify-between py-1.5 border-b border-slate-800">
+                <span class="text-slate-400">Campus Residence:</span>
+                <span id="dash-profile-hostel" class="text-slate-200">Hostel Block 1 (Senior Wing)</span>
+              </div>
+              <div class="flex justify-between py-1.5 border-b border-slate-800">
+                <span class="text-slate-400">Campus:</span>
+                <span>BITS Main Campus, Bangalore</span>
+              </div>
+              <div class="flex justify-between py-1.5 border-b border-slate-800">
+                <span class="text-slate-400">Trust Badge:</span>
+                <span class="text-emerald-400 font-bold">Level 3 Peer Champion</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+            <h3 class="font-heading font-bold text-lg text-slate-100">Campus Safety Preferences</h3>
+            <div class="space-y-3 text-xs text-slate-300">
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer">
+                <input type="checkbox" checked class="accent-emerald-500" />
+                <span>Only receive offers from verified students within BITS Bangalore</span>
+              </label>
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer">
+                <input type="checkbox" checked class="accent-emerald-500" />
+                <span>Notify me when free study materials are posted in my department</span>
+              </label>
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer">
+                <input type="checkbox" checked class="accent-emerald-500" />
+                <span>Suggest Central Library as default meetup spot</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- FOOTER -->
+  <!-- ========================================================================= -->
+  <footer class="relative z-10 bg-slate-950/90 border-t border-slate-800/80 py-12 px-4 sm:px-6 lg:px-8 mt-20">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+      
+      <!-- Brand column -->
+      <div class="space-y-3 md:col-span-1">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-cyan-400 p-[1px]">
+            <div class="w-full h-full bg-slate-950 rounded-[7px] flex items-center justify-center">
+              <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="m7 16-4-4 4-4"/><path d="M3 12h14a4 4 0 0 1 4 4v1"/><path d="m17 8 4 4-4 4"/><path d="M21 12H7a4 4 0 0 1-4-4V7"/>
+              </svg>
+            </div>
+          </div>
+          <span class="font-heading font-extrabold text-xl text-slate-100">RExchange BITS</span>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Exclusive student-to-student exchange marketplace empowering the BITS Bangalore campus community.
+        </p>
+        <p class="text-[11px] text-emerald-400 font-mono">
+          "Turn unused student resources into opportunities."
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h4 class="font-heading font-bold text-xs uppercase tracking-wider text-slate-200 mb-3">Marketplace</h4>
+        <ul class="space-y-2 text-xs text-slate-400">
+          <li><a href="javascript:void(0)" onclick="window.REXCHANGE.openCategory('events-tickets')" class="hover:text-emerald-400 transition-colors">Events & Tickets</a></li>
+          <li><a href="javascript:void(0)" onclick="window.REXCHANGE.openCategory('essentials')" class="hover:text-emerald-400 transition-colors">Campus Essentials</a></li>
+          <li><a href="javascript:void(0)" onclick="window.REXCHANGE.openCategory('electronic-accessories')" class="hover:text-emerald-400 transition-colors">Electronic Accessories</a></li>
+          <li><a href="javascript:void(0)" onclick="window.REXCHANGE.openCategory('study-materials')" class="hover:text-emerald-400 transition-colors">Study Materials</a></li>
+          <li><a href="javascript:void(0)" onclick="window.REXCHANGE.openCategory('notes-resources')" class="hover:text-emerald-400 transition-colors">Notes & Resources</a></li>
+        </ul>
+      </div>
+
+      <!-- Student Community -->
+      <div>
+        <h4 class="font-heading font-bold text-xs uppercase tracking-wider text-slate-200 mb-3">College Community</h4>
+        <ul class="space-y-2 text-xs text-slate-400">
+          <li><a href="javascript:void(0)" onclick="window.REXCHANGE.openCategory('free-giveaways')" class="hover:text-emerald-400 transition-colors">Free Giveaways</a></li>
+          <li><a href="javascript:void(0)" onclick="window.REXCHANGE.openCategory('skills-services')" class="hover:text-emerald-400 transition-colors">Skills & Tutoring</a></li>
+          <li><a href="javascript:void(0)" onclick="window.REXCHANGE.openTab('events')" class="hover:text-emerald-400 transition-colors">BITS Techfest & Cultural Passes</a></li>
+          <li><a href="javascript:void(0)" onclick="window.REXCHANGE.openAuthModal('signin')" class="hover:text-emerald-400 transition-colors">Student Sign In</a></li>
+          <li><a href="javascript:void(0)" onclick="window.REXCHANGE.openTab('trust')" class="hover:text-emerald-400 transition-colors">Trust & Safety Policy</a></li>
+        </ul>
+      </div>
+
+      <!-- Campus Hub -->
+      <div>
+        <h4 class="font-heading font-bold text-xs uppercase tracking-wider text-slate-200 mb-3">Exclusive College</h4>
+        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 text-xs space-y-1.5">
+          <div class="font-semibold text-slate-100">Bangalore Institute of Technology & Sciences (BITS)</div>
+          <div class="text-slate-400 flex items-center gap-1">
+            <i data-lucide="map-pin" class="w-3 h-3 text-emerald-400"></i> Bangalore, Karnataka
+          </div>
+          <div class="text-emerald-400 font-mono text-[10px] pt-1 flex items-center gap-1">
+            <i data-lucide="lock" class="w-3 h-3"></i> Domain restricted: @bits-bangalore.edu.in
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="max-w-7xl mx-auto pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div>© 2026 RExchange Platform. Dedicated to Bangalore Institute of Technology & Sciences (BITS).</div>
+      <div class="flex items-center gap-4 text-slate-400">
+        <span>Bangalore, Karnataka</span>
+        <span>•</span>
+        <span>Peer-to-Peer Campus Economy</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- MODALS -->
+  <!-- ========================================================================= -->
+
+  <!-- AUTHENTICATION PORTAL (SIGN IN & CREATE ACCOUNT) -->
+  <div id="modal-auth" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="glass-card modal-enter w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-3xl border border-emerald-500/30 p-6 sm:p-8 relative shadow-2xl">
+      <button onclick="window.REXCHANGE.closeAuthModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center z-10">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <!-- Campus Badge Header -->
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-mono mb-3">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>BITS Bangalore Student Portal</span>
+        </div>
+        <h2 class="font-heading font-extrabold text-2xl text-slate-100">Welcome to RExchange</h2>
+        <p class="text-xs text-slate-400 mt-1">Exclusive student-to-student marketplace for BITS Bangalore</p>
+      </div>
+
+      <!-- Auth Tabs Switcher -->
+      <div class="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-slate-950 border border-slate-800 mb-6">
+        <button id="auth-tab-signin" 
+                onclick="window.REXCHANGE.switchAuthTab('signin')" 
+                class="py-2.5 rounded-xl text-xs font-bold text-emerald-400 border border-emerald-500 bg-emerald-500/10 transition-all flex items-center justify-center gap-1.5">
+          <i data-lucide="log-in" class="w-3.5 h-3.5"></i> Sign In
+        </button>
+        <button id="auth-tab-signup" 
+                onclick="window.REXCHANGE.switchAuthTab('signup')" 
+                class="py-2.5 rounded-xl text-xs font-bold text-slate-400 border border-transparent transition-all flex items-center justify-center gap-1.5">
+          <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Create Student Account
+        </button>
+      </div>
+
+      <!-- Quick 1-Click Demo Login Bar -->
+      <div class="mb-6">
+        <div class="text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+          <span>Quick Demo Access (BITS Students)</span>
+          <span class="text-emerald-400 text-[10px]">Instant Test</span>
+        </div>
+        <div id="auth-quick-logins" class="space-y-2">
+          <!-- Injected via JavaScript -->
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 my-4">
+        <div class="flex-1 h-px bg-slate-800"></div>
+        <span class="text-[11px] text-slate-500 uppercase font-mono">Or use credentials</span>
+        <div class="flex-1 h-px bg-slate-800"></div>
+      </div>
+
+      <!-- 1. SIGN IN FORM -->
+      <form id="auth-form-signin" onsubmit="window.REXCHANGE.handleSignIn(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1.5">BITS College Email / USN *</label>
+          <div class="relative">
+            <i data-lucide="mail" class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="text" 
+                   id="signin-email" 
+                   required
+                   placeholder="e.g. aarav.patel@bits-bangalore.edu.in or 1BT23CS084" 
+                   value="aarav.patel@bits-bangalore.edu.in"
+                   class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500" />
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-xs font-bold text-slate-200">Password *</label>
+            <span class="text-[11px] text-emerald-400 font-mono">Demo: password123</span>
+          </div>
+          <div class="relative">
+            <i data-lucide="lock" class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="password" 
+                   id="signin-password" 
+                   required
+                   placeholder="••••••••" 
+                   value="password123"
+                   class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500" />
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-slate-400 pt-1">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked class="accent-emerald-500" />
+            <span>Remember on campus device</span>
+          </label>
+          <a href="javascript:void(0)" onclick="window.REXCHANGE.showToast('Demo reset: Log in with password123 or use 1-click login.', 'info')" class="text-emerald-400 hover:underline">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="neon-btn-primary w-full py-3 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2">
+          <i data-lucide="log-in" class="w-4 h-4"></i> Sign In to BITS Portal
+        </button>
+      </form>
+
+      <!-- 2. CREATE ACCOUNT (SIGN UP) FORM -->
+      <form id="auth-form-signup" onsubmit="window.REXCHANGE.handleSignUp(event)" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1.5">Full Student Name *</label>
+          <input type="text" 
+                 id="signup-name" 
+                 required
+                 placeholder="e.g. Rohan Sharma" 
+                 class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-200 mb-1.5">BITS College Email *</label>
+            <input type="text" 
+                   id="signup-email" 
+                   required
+                   placeholder="rohan.s@bits-bangalore.edu.in" 
+                   class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500" />
+            <span class="text-[10px] text-slate-500 mt-0.5 block">Must end with @bits-bangalore.edu.in</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-200 mb-1.5">Roll No / USN *</label>
+            <input type="text" 
+                   id="signup-usn" 
+                   required
+                   placeholder="1BT24CS112" 
+                   class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 uppercase focus:outline-none focus:border-emerald-500" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-200 mb-1.5">Department *</label>
+            <select id="signup-dept" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+              <option value="Computer Science & Engineering (CSE)">Computer Science & Engg (CSE)</option>
+              <option value="Electronics & Communication (ECE)">Electronics & Comm (ECE)</option>
+              <option value="Artificial Intelligence & Data Science (AI/DS)">AI & Data Science (AI/DS)</option>
+              <option value="Information Science & Engineering (ISE)">Information Science (ISE)</option>
+              <option value="Mechanical Engineering (ME)">Mechanical Engineering (ME)</option>
+              <option value="Electrical & Electronics (EEE)">Electrical & Electronics (EEE)</option>
+              <option value="Civil Engineering (CE)">Civil Engineering (CE)</option>
+              <option value="Biotechnology (BT)">Biotechnology (BT)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-200 mb-1.5">Year of Study *</label>
+            <select id="signup-year" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+              <option value="1st Year">1st Year (Fresher)</option>
+              <option value="2nd Year">2nd Year</option>
+              <option value="3rd Year" selected>3rd Year</option>
+              <option value="4th Year">4th Year (Senior)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1.5">Campus Residence / Hostel</label>
+          <select id="signup-hostel" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+            <option value="Hostel Block 1 (Boys - Senior Wing)">Hostel Block 1 (Boys - Senior Wing)</option>
+            <option value="Hostel Block 2 (Boys - Junior Wing)">Hostel Block 2 (Boys - Junior Wing)</option>
+            <option value="Hostel Block 3 (Girls - Diamond Block)">Hostel Block 3 (Girls - Diamond Block)</option>
+            <option value="Hostel Block 4 (Girls - Emerald Block)">Hostel Block 4 (Girls - Emerald Block)</option>
+            <option value="Day Scholar / Off-Campus PG">Day Scholar / Off-Campus PG</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-200 mb-1.5">Password *</label>
+            <input type="password" 
+                   id="signup-password" 
+                   required
+                   placeholder="••••••••" 
+                   class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-200 mb-1.5">Confirm Password *</label>
+            <input type="password" 
+                   id="signup-confirm-password" 
+                   required
+                   placeholder="••••••••" 
+                   class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500" />
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-400 pt-1">
+          <label class="flex items-start gap-2 cursor-pointer">
+            <input type="checkbox" required checked class="accent-emerald-500 mt-0.5" />
+            <span>I confirm I am an enrolled student of BITS Bangalore and agree to safe campus trade rules.</span>
+          </label>
+        </div>
+
+        <button type="submit" class="neon-btn-primary w-full py-3 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2">
+          <i data-lucide="user-plus" class="w-4 h-4"></i> Create Verified BITS Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 1. ITEM DETAIL MODAL -->
+  <div id="modal-item-detail" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="glass-card modal-enter w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl border border-slate-700/80 p-6 relative">
+      <button onclick="window.REXCHANGE.closeModal('modal-item-detail')" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center z-10 transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+      <div id="modal-item-detail-content">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. CREATE LISTING MODAL WITH LIVE PREVIEW -->
+  <div id="modal-create-listing" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="glass-card modal-enter w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-3xl border border-slate-700/80 p-6 sm:p-8 relative">
+      <button onclick="window.REXCHANGE.closeModal('modal-create-listing')" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center z-10">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <div class="mb-6">
+        <span class="text-xs font-mono uppercase tracking-widest text-emerald-400 font-semibold">BITS Campus Marketplace</span>
+        <h2 class="font-heading font-extrabold text-2xl sm:text-3xl text-slate-100">List an Item on Campus</h2>
+        <p class="text-xs text-slate-400 mt-1">Post textbooks, passes, notes, or electronics. Live preview updates on the right as you type.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Form Column -->
+        <form onsubmit="window.REXCHANGE.submitNewListing(event)" class="lg:col-span-7 space-y-4">
+          
+          <!-- Item Title -->
+          <div>
+            <label class="block text-xs font-bold text-slate-200 mb-1.5">Item Title *</label>
+            <input type="text" 
+                   id="new-item-title" 
+                   required
+                   placeholder="e.g. Casio FX-991CW Calculator / Techfest Pass / DSA Notes" 
+                   class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500" />
+          </div>
+
+          <!-- Category & Listing Type -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-200 mb-1.5">Category *</label>
+              <select id="new-item-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                <option value="study-materials">📚 Study Materials</option>
+                <option value="events-tickets">🎟 Events & Tickets</option>
+                <option value="essentials">🎒 Essentials</option>
+                <option value="electronic-accessories">🎧 Electronic Accessories</option>
+                <option value="notes-resources">📝 Notes & Resources</option>
+                <option value="skills-services">🧑‍💻 Skills & Services</option>
+                <option value="free-giveaways">🎁 Free / Giveaways</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-200 mb-1.5">Condition *</label>
+              <select id="new-item-condition" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                <option value="Brand New">Brand New</option>
+                <option value="Like New">Like New</option>
+                <option value="Good Condition" selected>Good Condition</option>
+                <option value="Fair Condition">Fair Condition</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Listing Type Radio Selector -->
+          <div>
+            <label class="block text-xs font-bold text-slate-200 mb-1.5">Listing Intent</label>
+            <div class="grid grid-cols-3 gap-2.5">
+              <label class="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-700 cursor-pointer hover:border-emerald-500 text-xs text-slate-200">
+                <input type="radio" name="new-item-type" value="sale" checked class="accent-emerald-500" />
+                <span>⚡ Sell</span>
+              </label>
+              <label class="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-700 cursor-pointer hover:border-purple-500 text-xs text-slate-200">
+                <input type="radio" name="new-item-type" value="exchange" class="accent-purple-500" />
+                <span>🔄 Exchange</span>
+              </label>
+              <label class="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-700 cursor-pointer hover:border-cyan-500 text-xs text-slate-200">
+                <input type="radio" name="new-item-type" value="free" class="accent-cyan-500" />
+                <span>🎁 Free</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Price & Pickup Location -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-200 mb-1.5">Price in ₹ (INR)</label>
+              <div class="relative">
+                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">₹</span>
+                <input type="number" 
+                       id="new-item-price" 
+                       placeholder="350" 
+                       value="350"
+                       min="0"
+                       class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-8 pr-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 font-mono" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-200 mb-1.5">Campus Pickup Spot</label>
+              <input type="text" 
+                     id="new-item-pickup" 
+                     placeholder="e.g. Central Library Quad / SAC Cafe" 
+                     value="Central Library Quad"
+                     class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500" />
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="block text-xs font-bold text-slate-200 mb-1.5">Item Details & Notes *</label>
+            <textarea id="new-item-desc" 
+                      rows="3" 
+                      required
+                      placeholder="Mention the edition, scratches/marks, reason for selling, or items you're open to swapping with."
+                      class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-100 focus:outline-none focus:border-emerald-500"></textarea>
+          </div>
+
+          <!-- Quick Image Presets -->
+          <div>
+            <label class="block text-xs font-bold text-slate-200 mb-1.5">Quick Photo Template (or enter URL)</label>
+            <div class="flex items-center gap-2 overflow-x-auto pb-1">
+              <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=150&auto=format&fit=crop&q=80" 
+                   onclick="window.REXCHANGE.handleImagePresetSelect(this.src)" 
+                   alt="Book" class="w-12 h-12 rounded-lg object-cover cursor-pointer border-2 border-transparent hover:border-emerald-500 flex-shrink-0" title="Textbook" />
+              <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=150&auto=format&fit=crop&q=80" 
+                   onclick="window.REXCHANGE.handleImagePresetSelect(this.src)" 
+                   alt="Headphones" class="w-12 h-12 rounded-lg object-cover cursor-pointer border-2 border-transparent hover:border-emerald-500 flex-shrink-0" title="Electronics" />
+              <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=150&auto=format&fit=crop&q=80" 
+                   onclick="window.REXCHANGE.handleImagePresetSelect(this.src)" 
+                   alt="Event" class="w-12 h-12 rounded-lg object-cover cursor-pointer border-2 border-transparent hover:border-emerald-500 flex-shrink-0" title="Tickets" />
+              <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=150&auto=format&fit=crop&q=80" 
+                   onclick="window.REXCHANGE.handleImagePresetSelect(this.src)" 
+                   alt="Notes" class="w-12 h-12 rounded-lg object-cover cursor-pointer border-2 border-transparent hover:border-emerald-500 flex-shrink-0" title="Notes" />
+              <img src="https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=150&auto=format&fit=crop&q=80" 
+                   onclick="window.REXCHANGE.handleImagePresetSelect(this.src)" 
+                   alt="Calculator" class="w-12 h-12 rounded-lg object-cover cursor-pointer border-2 border-transparent hover:border-emerald-500 flex-shrink-0" title="Calculator" />
+            </div>
+            <input type="hidden" id="new-item-image-url" value="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80" />
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-2">
+            <button type="submit" class="neon-btn-primary w-full py-3 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4"></i> Publish to BITS Campus Marketplace
+            </button>
+          </div>
+        </form>
+
+        <!-- Live Preview Column -->
+        <div class="lg:col-span-5 flex flex-col justify-center">
+          <div class="text-xs font-mono uppercase tracking-widest text-slate-400 mb-3 flex items-center gap-1.5">
+            <i data-lucide="eye" class="w-3.5 h-3.5 text-emerald-400"></i> Real-time Live Preview Card
+          </div>
+          
+          <div class="glass-card rounded-2xl overflow-hidden border border-emerald-500/40 p-0 shadow-2xl">
+            <div class="relative h-44 bg-slate-950">
+              <img id="preview-card-img" src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80" alt="Preview" class="w-full h-full object-cover" />
+              <span id="preview-card-badge" class="absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded bg-emerald-950/80 border border-emerald-500/40 text-emerald-300">
+                ⚡ FOR SALE
+              </span>
+              <div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-[11px] text-slate-300">
+                <span id="preview-card-cond" class="px-2 py-0.5 rounded bg-black/60 backdrop-blur-md border border-white/10">Good Condition</span>
+                <span class="text-emerald-300 bg-emerald-950/70 px-2 py-0.5 rounded">📍 0.1 km away</span>
+              </div>
+            </div>
+            <div class="p-4 space-y-2">
+              <span id="preview-card-cat" class="text-[10px] uppercase font-mono text-emerald-400">Study Materials</span>
+              <h3 id="preview-card-title" class="font-heading font-bold text-slate-100 text-sm">Your Item Title</h3>
+              <p id="preview-card-desc" class="text-xs text-slate-400 line-clamp-2">Add a clear description about your item...</p>
+              
+              <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+                <div id="preview-card-price" class="text-emerald-400 font-extrabold text-base">₹350</div>
+                <div class="text-[11px] text-slate-400">BITS Student (You)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. MAKE OFFER MODAL -->
+  <div id="modal-offer" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="glass-card modal-enter w-full max-w-md rounded-3xl border border-slate-700/80 p-6 relative">
+      <button onclick="window.REXCHANGE.closeModal('modal-offer')" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center z-10">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <div class="mb-4">
+        <span class="text-xs font-mono uppercase tracking-widest text-emerald-400 font-semibold">Campus Negotiation</span>
+        <h3 class="font-heading font-bold text-xl text-slate-100 mt-1">Make an Offer / Propose Swap</h3>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 mb-4">
+        <div class="text-xs text-slate-400">Item:</div>
+        <div id="offer-item-title" class="text-sm font-bold text-slate-100 truncate">Item Title</div>
+        <div class="flex items-center justify-between mt-1 text-xs">
+          <span class="text-slate-500">Listed Price:</span>
+          <span id="offer-item-original-price" class="text-emerald-400 font-bold">₹0</span>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1.5">Your Offer Amount (₹ INR)</label>
+          <input type="number" id="offer-amount-input" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 font-mono focus:outline-none focus:border-emerald-500" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1.5">Message / Exchange Proposal (Optional)</label>
+          <textarea id="offer-notes-input" rows="2" placeholder="e.g. Can meet today at Central Library at 4 PM, or trade with my USB hub." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-100 focus:outline-none focus:border-emerald-500"></textarea>
+        </div>
+
+        <button onclick="window.REXCHANGE.submitOffer()" class="neon-btn-primary w-full py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2">
+          <i data-lucide="send" class="w-4 h-4"></i> Send Offer to Student Seller
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. EVENT TICKET PASS MODAL -->
+  <div id="modal-event-ticket" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="glass-card modal-enter w-full max-w-md rounded-3xl border border-slate-700/80 relative">
+      <button onclick="window.REXCHANGE.closeModal('modal-event-ticket')" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center z-10">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+      <div id="modal-event-ticket-content">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. REPORT LISTING MODAL -->
+  <div id="modal-report" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="glass-card modal-enter w-full max-w-md rounded-3xl border border-slate-700/80 p-6 relative">
+      <button onclick="window.REXCHANGE.closeModal('modal-report')" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center z-10">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+      <h3 class="font-heading font-bold text-lg text-slate-100 mb-2">Report Listing to BITS Moderators</h3>
+      <p class="text-xs text-slate-400 mb-4">Help keep our college network safe and scam-free.</p>
+      <div class="space-y-2.5 mb-5 text-xs text-slate-200">
+        <label class="flex items-center gap-2 p-2.5 rounded-lg bg-slate-900 border border-slate-800 cursor-pointer">
+          <input type="radio" name="report-reason" checked class="accent-rose-500" />
+          <span>Not an enrolled BITS student / Commercial spam</span>
+        </label>
+        <label class="flex items-center gap-2 p-2.5 rounded-lg bg-slate-900 border border-slate-800 cursor-pointer">
+          <input type="radio" name="report-reason" class="accent-rose-500" />
+          <span>Inaccurate description or counterfeit item</span>
+        </label>
+        <label class="flex items-center gap-2 p-2.5 rounded-lg bg-slate-900 border border-slate-800 cursor-pointer">
+          <input type="radio" name="report-reason" class="accent-rose-500" />
+          <span>Unsafe meetup location requested outside campus</span>
+        </label>
+      </div>
+      <button onclick="window.REXCHANGE.submitReport()" class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs">
+        Submit Report
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="canvas-effects.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REXchange — Intelligent Campus Ecosystem for SRMIST KTR</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { cyan: { 400: '#00f2fe', 500: '#00e5ff', 600: '#06b6d4' } } } }
+    }
+  </script>
+  <!-- Lucide Icons & Canvas Confetti -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- Leaflet Map CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="/static/styles.css?v=9.1.0">
+</head>
+<body class="bg-[#06080d] text-slate-100 flex selection:bg-cyan-500 selection:text-black">
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--               1. DESKTOP FUTURISTIC SIDEBAR                -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <aside class="hidden lg:flex flex-col w-64 h-screen sticky top-0 bg-[#090c14] border-r border-white/5 p-4 z-40 shrink-0 select-none">
+    
+    <!-- Brand Logo -->
+    <div class="flex items-center gap-3 px-2 py-2.5 mb-4 cursor-pointer" onclick="showView('home')">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/25">
+        <i data-lucide="repeat" class="w-5 h-5 text-black"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <span class="font-black text-lg tracking-tight bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">REXchange</span>
+          <span class="text-[9px] uppercase font-black px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">ECOSYSTEM</span>
+        </div>
+        <p class="text-[10px] text-slate-400 font-medium">SRMIST KTR Network</p>
+      </div>
+    </div>
+
+    <!-- Main Navigation Links -->
+    <nav class="space-y-1">
+      <div class="sidebar-link active" id="nav-home" onclick="showView('home')">
+        <i data-lucide="home" class="w-4 h-4"></i> <span>Home Feed</span>
+      </div>
+      <div class="sidebar-link" id="nav-smart-match" onclick="showView('smart-match')">
+        <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400"></i> <span class="text-cyan-300 font-bold">REX Smart Match™</span>
+      </div>
+      <div class="sidebar-link" id="nav-demands" onclick="showView('demands')">
+        <i data-lucide="help-circle" class="w-4 h-4 text-amber-400"></i> <span class="text-amber-300 font-bold">Need Something?</span>
+        <span class="ml-auto text-[9px] font-black px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300">Demand</span>
+      </div>
+      
+      <!-- 🎟️ REX Tickets as an Extra Portal Feature -->
+      <div class="sidebar-link" id="nav-tickets" onclick="showView('tickets')">
+        <i data-lucide="ticket" class="w-4 h-4 text-rose-400"></i> <span>REX Tickets</span>
+        <span class="ml-auto text-[9px] font-black px-1.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">Portal</span>
+      </div>
+
+      <div class="sidebar-link" id="nav-network" onclick="showView('network')">
+        <i data-lucide="share-2" class="w-4 h-4 text-emerald-400"></i> <span>Campus Network</span>
+      </div>
+      <div class="sidebar-link" id="nav-explore" onclick="showView('explore')">
+        <i data-lucide="compass" class="w-4 h-4"></i> <span>Explore Supply</span>
+      </div>
+      <div class="sidebar-link" id="nav-messages" onclick="showView('messages')">
+        <i data-lucide="message-square" class="w-4 h-4"></i> <span>Messages</span>
+        <span class="ml-auto text-[9px] font-black px-1.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300">Live</span>
+      </div>
+      <div class="sidebar-link" id="nav-map" onclick="showView('map')">
+        <i data-lucide="map" class="w-4 h-4"></i> <span>Campus Map</span>
+      </div>
+      <div class="sidebar-link" id="nav-rex-ai" onclick="openREXAIDrawer()">
+        <i data-lucide="bot" class="w-4 h-4 text-cyan-400"></i> <span class="text-cyan-300 font-extrabold">REX AI Assistant</span>
+      </div>
+    </nav>
+
+    <!-- Divider -->
+    <div class="my-3 border-t border-white/5"></div>
+
+    <!-- Student Workspace Links -->
+    <div class="text-[10px] font-black uppercase text-slate-500 px-3 mb-1.5 tracking-wider">Campus Trust & Impact</div>
+    <nav class="space-y-1">
+      <div class="sidebar-link" id="nav-reputation" onclick="showView('reputation')">
+        <i data-lucide="shield-check" class="w-4 h-4"></i> <span>Reputation & XP</span>
+      </div>
+      <div class="sidebar-link" id="nav-impact" onclick="showView('impact')">
+        <i data-lucide="heart-handshake" class="w-4 h-4 text-emerald-400"></i> <span>Campus Impact</span>
+      </div>
+      <div class="sidebar-link" id="nav-leaderboard" onclick="showView('leaderboard')">
+        <i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i> <span>Leaderboard</span>
+      </div>
+    </nav>
+
+    <!-- Bottom User Profile Card -->
+    <div class="mt-auto pt-3 border-t border-white/5">
+      <div onclick="openProfileModal()" class="flex items-center gap-2.5 p-2 rounded-2xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/5 cursor-pointer transition">
+        <img id="sidebarUserAvatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" class="w-9 h-9 rounded-xl object-cover border border-cyan-400/40">
+        <div class="overflow-hidden">
+          <div class="flex items-center gap-1">
+            <p id="sidebarUserName" class="text-xs font-bold text-white truncate leading-tight">Ayan Saha</p>
+            <span class="text-cyan-400 text-[10px]">✓</span>
+          </div>
+          <p id="sidebarUserDept" class="text-[10px] text-slate-400 truncate">CSE Core · 1st Year (RA2311003010001)</p>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span class="text-[9px] text-cyan-300 font-black">Score: 92</span>
+            <span class="text-[9px] text-amber-400 font-extrabold">⭐ <span id="sidebarUserXP">1,240</span> XP</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--                    2. MAIN CONTENT WRAPPER                 -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="flex-1 flex flex-col min-h-screen overflow-x-hidden pb-16 lg:pb-0">
+
+    <!-- Top Header Bar -->
+    <header class="sticky top-0 z-30 bg-[#06080d]/85 backdrop-blur-2xl border-b border-white/5 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-3">
+      
+      <div class="flex items-center gap-3 flex-1 max-w-lg">
+        <div class="lg:hidden flex items-center gap-2" onclick="showView('home')">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-400 to-indigo-600 flex items-center justify-center">
+            <i data-lucide="repeat" class="w-4 h-4 text-black"></i>
+          </div>
+          <span class="font-black text-sm text-white">REXchange</span>
+        </div>
+
+        <div class="relative w-full hidden sm:block">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5"></i>
+          <input type="text" id="globalSearchInput" placeholder="What are you looking for around SRMIST KTR? (Ctrl + K)" 
+            class="rex-input pl-10 pr-12 text-xs py-2 w-full" oninput="handleSearch(this.value)">
+          <span class="absolute right-3 top-2 px-1.5 py-0.5 rounded text-[9px] font-black bg-slate-800 text-slate-400 border border-slate-700">Ctrl K</span>
+        </div>
+      </div>
+
+      <!-- Right Header Actions -->
+      <div class="flex items-center gap-2">
+        <button onclick="start90SecondDemo()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-amber-500/20 transition">
+          <span>🚀 90-Sec Judge Demo</span>
+        </button>
+
+        <button onclick="openCreateDemandModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/40 text-amber-300 font-bold text-xs transition">
+          <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
+          <span>I Need Something</span>
+        </button>
+
+        <button onclick="openCreateListingModal()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-extrabold text-xs shadow-lg shadow-cyan-500/25 transition transform hover:scale-105">
+          <i data-lucide="plus" class="w-3.5 h-3.5 text-black"></i>
+          <span>Create Listing</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <!--                     VIEW 1: HOME VIEW                     -->
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <div id="view-home" class="animate-view p-4 sm:p-8 max-w-7xl mx-auto w-full space-y-8">
+      
+      <!-- Hero Section -->
+      <div class="relative rounded-3xl p-6 sm:p-10 overflow-hidden border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent">
+        <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-black tracking-wide mb-3">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>THE INTELLIGENT EXCHANGE NETWORK FOR SRMIST KTR</span>
+          </div>
+          
+          <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+            Give what you don't need.<br>
+            <span class="bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-300 bg-clip-text text-transparent">Find what you do.</span>
+          </h1>
+          <p class="text-sm sm:text-base text-slate-400 mt-2 font-medium">
+            The student-powered exchange ecosystem for SRMIST KTR. Connect with peers across Paari, Kaari, Tech Park, UB, and Estancia with AI matching, verified reputation, and 24/7 CCTV safe meetups.
+          </p>
+
+          <!-- Animated Ecosystem Flow: STUDENT ➔ REX AI ➔ RESOURCE ➔ STUDENT -->
+          <div class="my-6 p-4 rounded-2xl bg-[#080c16]/80 border border-cyan-400/20">
+            <p class="text-[10px] font-black text-cyan-400 uppercase tracking-wider mb-2.5">Live Campus Resource Flow</p>
+            <div class="flex items-center justify-between gap-1 text-center text-xs font-black flex-wrap sm:flex-nowrap">
+              <div class="eco-node px-3 py-2 rounded-xl text-white">👨‍🎓 STUDENT</div>
+              <div class="text-cyan-400 energy-line px-2 font-mono">➔ ➔</div>
+              <div class="eco-node px-3 py-2 rounded-xl text-cyan-300 border-cyan-400/50 bg-cyan-500/10">🤖 REX AI</div>
+              <div class="text-cyan-400 energy-line px-2 font-mono">➔ ➔</div>
+              <div class="eco-node px-3 py-2 rounded-xl text-amber-300">📦 RESOURCE</div>
+              <div class="text-cyan-400 energy-line px-2 font-mono">➔ ➔</div>
+              <div class="eco-node px-3 py-2 rounded-xl text-emerald-300">👩‍🎓 PEER</div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <button onclick="showView('smart-match')" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-black text-xs shadow-xl shadow-cyan-500/20 transition flex items-center gap-2">
+              <span>Try REX Smart Match™</span> <i data-lucide="arrow-right" class="w-4 h-4 text-black"></i>
+            </button>
+            <button onclick="openCreateDemandModal()" class="px-6 py-3 rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-300 font-bold text-xs transition flex items-center gap-2">
+              <i data-lucide="help-circle" class="w-4 h-4"></i> <span>Post a Need ("Need Something?")</span>
+            </button>
+            <button onclick="showView('tickets')" class="px-6 py-3 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-400/40 text-rose-300 font-bold text-xs transition flex items-center gap-2">
+              <i data-lucide="ticket" class="w-4 h-4"></i> <span>🎟️ REX Tickets Portal</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Animated Counters -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8 pt-6 border-t border-white/5 text-center">
+          <div>
+            <p id="counterStudents" class="text-xl sm:text-3xl font-black text-white">1,284</p>
+            <p class="text-[11px] text-slate-400 font-bold">Students Online</p>
+          </div>
+          <div>
+            <p id="counterListings" class="text-xl sm:text-3xl font-black text-cyan-400">342</p>
+            <p class="text-[11px] text-slate-400 font-bold">Active Listings</p>
+          </div>
+          <div>
+            <p id="counterExchanges" class="text-xl sm:text-3xl font-black text-emerald-400">89</p>
+            <p class="text-[11px] text-slate-400 font-bold">Exchanges Today</p>
+          </div>
+          <div>
+            <p id="counterSaved" class="text-xl sm:text-3xl font-black text-amber-400">₹3.4L</p>
+            <p class="text-[11px] text-slate-400 font-bold">Student Money Saved</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personalized Greeting & Live Campus Activity Feed -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left 2 Cols: Personalized Greeting & Smart Match Recommendations -->
+        <div class="lg:col-span-2 space-y-4">
+          <div>
+            <h2 class="text-2xl font-black text-white flex items-center gap-2">
+              <span>Good morning, Ayan</span> <span class="animate-bounce">👋</span>
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">Your personalized SRMIST KTR campus pulse · CSE Core 1st Year (Paari Hostel)</p>
+          </div>
+
+          <!-- Quick Category Filters -->
+          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+            <button onclick="filterCategory('Notes')" class="px-4 py-2.5 rounded-2xl bg-white/[0.04] hover:bg-cyan-500/10 border border-white/10 hover:border-cyan-400/40 text-xs font-bold text-slate-200 hover:text-cyan-300 whitespace-nowrap transition flex items-center gap-2">
+              <span>📚</span> <span>Find Notes</span>
+            </button>
+            <button onclick="filterCategory('Electronics')" class="px-4 py-2.5 rounded-2xl bg-white/[0.04] hover:bg-cyan-500/10 border border-white/10 hover:border-cyan-400/40 text-xs font-bold text-slate-200 hover:text-cyan-300 whitespace-nowrap transition flex items-center gap-2">
+              <span>💻</span> <span>Electronics</span>
+            </button>
+            <button onclick="showView('tickets')" class="px-4 py-2.5 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-xs font-bold text-rose-300 whitespace-nowrap transition flex items-center gap-2">
+              <span>🎟️</span> <span>Fest & Event Tickets</span>
+            </button>
+            <button onclick="filterCategory('Skills')" class="px-4 py-2.5 rounded-2xl bg-white/[0.04] hover:bg-cyan-500/10 border border-white/10 hover:border-cyan-400/40 text-xs font-bold text-slate-200 hover:text-cyan-300 whitespace-nowrap transition flex items-center gap-2">
+              <span>🛠️</span> <span>Skills & Mentorship</span>
+            </button>
+          </div>
+
+          <!-- Featured Smart Match Highlights -->
+          <div class="glass-card p-5 border-cyan-400/30">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+                <h3 class="text-sm font-black text-white">REX Smart Match™ Recommendations</h3>
+              </div>
+              <button onclick="showView('smart-match')" class="text-xs text-cyan-400 font-bold hover:underline">View All AI Rankings →</button>
+            </div>
+            <div id="homeSmartMatchGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+          </div>
+        </div>
+
+        <!-- Right 1 Col: Live Campus Pulse Feed -->
+        <div class="glass-card p-5 flex flex-col justify-between space-y-3">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-white/5">
+              <h3 class="text-sm font-black text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Live Campus Activity Feed</span>
+              </h3>
+              <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Live</span>
+            </div>
+
+            <div id="liveActivityFeedList" class="space-y-2.5 mt-3 text-xs"></div>
+          </div>
+
+          <div class="pt-3 border-t border-white/5 space-y-1.5">
+            <button onclick="openCreateDemandModal()" class="w-full py-2 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/30 rounded-xl text-amber-300 font-bold text-xs transition flex items-center justify-center gap-1.5">
+              <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
+              <span>Need something? Post a Request →</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Campus Feed -->
+      <div class="space-y-3.5 pt-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-black text-white">All Active Campus Listings</h3>
+          <span id="homeFeedCountBadge" class="text-xs font-bold text-slate-400">Loading resources...</span>
+        </div>
+        <div id="homeListingsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+      </div>
+
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <!--          VIEW 2: 🎟️ REX TICKETS DEDICATED PORTAL         -->
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <div id="view-tickets" class="animate-view p-4 sm:p-8 max-w-7xl mx-auto w-full hidden space-y-8">
+      
+      <!-- Tickets Hero -->
+      <div class="relative rounded-3xl p-6 sm:p-10 overflow-hidden border border-cyan-400/30 bg-gradient-to-b from-cyan-950/20 via-[#0a0f1d] to-[#06080d] shadow-2xl">
+        <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-cyan-500/15 blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-black tracking-wide mb-3">
+            <i data-lucide="ticket" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>CAMPUS-ONLY LAST-MINUTE STUDENT TICKET EXCHANGE</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+            Got an extra ticket?<br>
+            <span class="bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-300 bg-clip-text text-transparent">Someone on campus probably needs it.</span>
+          </h1>
+          <p class="text-sm sm:text-base text-slate-400 mt-2 font-medium">
+            Sell, transfer or find last-minute tickets from verified students around SRMIST with fair pricing and 24/7 CCTV safe handoffs.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-3 pt-5">
+            <button onclick="openHaveTicketModal()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-black text-xs shadow-xl shadow-cyan-500/25 transition flex items-center gap-2">
+              <i data-lucide="ticket" class="w-4 h-4 text-black"></i> <span>🎟️ I Have a Ticket</span>
+            </button>
+            <button onclick="focusTicketSearch()" class="px-6 py-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs transition flex items-center gap-2">
+              <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i> <span>🔎 Find a Ticket</span>
+            </button>
+            <button onclick="openCreateTicketRequestModal()" class="px-5 py-3 rounded-2xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/40 text-amber-300 font-bold text-xs transition flex items-center gap-2">
+              <i data-lucide="bell" class="w-4 h-4"></i> <span>Can't find? Request Ticket</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tickets Impact Counters -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8 pt-6 border-t border-white/5 text-center">
+          <div>
+            <p id="ticketCounterTransferred" class="text-xl sm:text-3xl font-black text-cyan-400">429</p>
+            <p class="text-[11px] text-slate-400 font-bold">Tickets Transferred</p>
+          </div>
+          <div>
+            <p id="ticketCounterSaved" class="text-xl sm:text-3xl font-black text-amber-400">₹84,350</p>
+            <p class="text-[11px] text-slate-400 font-bold">Money Saved by Students</p>
+          </div>
+          <div>
+            <p id="ticketCounterConnected" class="text-xl sm:text-3xl font-black text-emerald-400">392</p>
+            <p class="text-[11px] text-slate-400 font-bold">Students Connected</p>
+          </div>
+          <div>
+            <p id="ticketCounterWaste" class="text-xl sm:text-3xl font-black text-purple-400">429</p>
+            <p class="text-[11px] text-slate-400 font-bold">Unused Tickets Rescued</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⚡ Last-Minute Tickets with Countdowns -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-xl font-black text-white flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-rose-500 animate-pulse"></span>
+              <span>⚡ Last-Minute Tickets</span>
+            </h3>
+            <p class="text-xs text-slate-400">Events starting soon with verified student discounts.</p>
+          </div>
+          <span class="text-xs font-black px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">
+            🔥 HIGH DEMAND
+          </span>
+        </div>
+        <div id="lastMinuteTicketsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </div>
+
+      <!-- Ticket Categories -->
+      <div class="space-y-4 pt-2">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <h3 class="text-lg font-black text-white">Explore All Campus Tickets</h3>
+          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+            <button onclick="filterTicketsByCategory('All')" class="ticket-cat-chip active px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 text-xs font-bold whitespace-nowrap">All</button>
+            <button onclick="filterTicketsByCategory('Concerts')" class="ticket-cat-chip px-3 py-1.5 rounded-xl bg-white/5 text-slate-300 hover:text-white border border-white/5 text-xs font-bold whitespace-nowrap">🎤 Concerts</button>
+            <button onclick="filterTicketsByCategory('Sports')" class="ticket-cat-chip px-3 py-1.5 rounded-xl bg-white/5 text-slate-300 hover:text-white border border-white/5 text-xs font-bold whitespace-nowrap">🏆 Sports</button>
+            <button onclick="filterTicketsByCategory('Workshops')" class="ticket-cat-chip px-3 py-1.5 rounded-xl bg-white/5 text-slate-300 hover:text-white border border-white/5 text-xs font-bold whitespace-nowrap">📚 Workshops</button>
+            <button onclick="filterTicketsByCategory('Gaming Events')" class="ticket-cat-chip px-3 py-1.5 rounded-xl bg-white/5 text-slate-300 hover:text-white border border-white/5 text-xs font-bold whitespace-nowrap">🎮 Gaming</button>
+            <button onclick="filterTicketsByCategory('Movies')" class="ticket-cat-chip px-3 py-1.5 rounded-xl bg-white/5 text-slate-300 hover:text-white border border-white/5 text-xs font-bold whitespace-nowrap">🎬 Movies</button>
+          </div>
+        </div>
+        <div id="allTicketsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <!--          VIEW 3: REX SMART MATCH™ SIGNATURE VIEW        -->
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <div id="view-smart-match" class="animate-view p-4 sm:p-8 max-w-6xl mx-auto w-full hidden space-y-6">
+      <div class="glass-card p-6 sm:p-8 border-cyan-400/40 relative overflow-hidden">
+        <span class="px-3 py-1 rounded-full text-xs font-black bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">SIGNATURE AI MATCHING ENGINE</span>
+        <h2 class="text-2xl sm:text-3xl font-black text-white mt-2">REX Smart Match™</h2>
+        <div class="mt-4 flex gap-2">
+          <input type="text" id="smartMatchInput" placeholder='e.g. "I need a calculator under ₹800 near my hostel."' 
+            value="I need a calculator under ₹800 near my hostel." class="rex-input text-xs sm:text-sm py-3 px-4 flex-1">
+          <button onclick="executeSmartMatchQuery()" class="px-6 py-3 rounded-2xl bg-cyan-400 text-black font-black text-xs shadow-lg transition">
+            Run Match
+          </button>
+        </div>
+      </div>
+      <div id="smartMatchResultsList" class="space-y-4"></div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <!--       VIEW 4: "NEED SOMETHING?" DEMAND-DRIVEN MODE       -->
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <div id="view-demands" class="animate-view p-4 sm:p-8 max-w-6xl mx-auto w-full hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-400/40">DEMAND-DRIVEN EXCHANGE</span>
+          <h2 class="text-2xl font-black text-white mt-1.5">Campus Requests & Needs</h2>
+          <p class="text-xs text-slate-400">Post what you need. REX automatically alerts seniors and matching students across SRMIST KTR.</p>
+        </div>
+        <button onclick="openCreateDemandModal()" class="px-4 py-2.5 rounded-2xl bg-amber-400 text-black font-black text-xs shadow-lg transition">
+          + Post What You Need
+        </button>
+      </div>
+      <div id="demandsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <!--    VIEW 5: SIGNATURE VISUAL: REX CAMPUS NETWORK         -->
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <div id="view-network" class="animate-view p-4 sm:p-8 max-w-6xl mx-auto w-full hidden space-y-6">
+      <div class="text-center max-w-xl mx-auto">
+        <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">CAMPUS VISUALIZER</span>
+        <h2 class="text-2xl sm:text-3xl font-black text-white mt-1.5">REX Campus Network</h2>
+        <p class="text-xs text-slate-400 mt-1">Live visualization of Students ↔ Resources ↔ Safe Exchange Locations in SRMIST KTR.</p>
+      </div>
+      <div class="campus-network-box p-8 min-h-[400px] flex flex-col justify-between">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+          <div class="space-y-3">
+            <p class="text-xs font-black text-cyan-400 uppercase tracking-wider text-center">👨‍🎓 Students / Dorms</p>
+            <div class="network-node network-node-active"><p class="text-xs font-black text-white">Paari Hostel Block B</p><p class="text-[10px] text-slate-400">Ayan Saha (CSE 1st Year)</p></div>
+            <div class="network-node"><p class="text-xs font-black text-white">Kaari Hostel</p><p class="text-[10px] text-slate-400">Rohan Sundaram (3rd Year)</p></div>
+          </div>
+          <div class="space-y-3">
+            <p class="text-xs font-black text-amber-400 uppercase tracking-wider text-center">📦 Resources Transferred</p>
+            <div class="network-node network-node-active border-amber-400/50"><p class="text-xs font-black text-amber-300">Casio FX-991EX Calculator</p><p class="text-[10px] text-slate-400">₹650 · 4 min away · 95% Match</p></div>
+            <div class="network-node border-amber-400/30"><p class="text-xs font-black text-amber-300">21CSC201J DSA Notes</p><p class="text-[10px] text-slate-400">FREE / Give · 2 min away</p></div>
+          </div>
+          <div class="space-y-3">
+            <p class="text-xs font-black text-emerald-400 uppercase tracking-wider text-center">📍 24/7 CCTV Safe Locations</p>
+            <div class="network-node network-node-active border-emerald-400/50"><p class="text-xs font-black text-emerald-300">🏢 UB Ground Floor Lobby</p><p class="text-[10px] text-slate-400">Near Nescafe · CCTV Monitored</p></div>
+            <div class="network-node border-emerald-400/30"><p class="text-xs font-black text-emerald-300">💻 Tech Park (TP) Atrium</p><p class="text-[10px] text-slate-400">Engineering Innovation Hub</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <!--                    VIEW 6: EXPLORE VIEW                   -->
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <div id="view-explore" class="animate-view p-4 sm:p-8 max-w-7xl mx-auto w-full hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-black text-white">Explore All Campus Supply</h2>
+        <select id="exploreCategorySelect" onchange="handleExploreFilter(this.value)" class="rex-input text-xs py-2 px-3 w-auto">
+          <option value="all">All Categories</option>
+          <option value="Notes">📚 Notes & Study Material</option>
+          <option value="Electronics">💻 Electronics & Calculators</option>
+          <option value="Skills">🛠️ Skills & Mentorship</option>
+        </select>
+      </div>
+      <div id="exploreGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <!--              VIEW 7: DISCORD/TELEGRAM MESSAGES         -->
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <div id="view-messages" class="animate-view p-4 sm:p-8 max-w-6xl mx-auto w-full hidden">
+      <div class="chat-window h-[75vh] flex flex-col md:flex-row">
+        <div class="w-full md:w-80 bg-[#090c14] border-r border-white/5 p-4 flex flex-col shrink-0">
+          <h3 class="text-sm font-black text-white mb-3">Active Conversations</h3>
+          <div class="space-y-1.5 overflow-y-auto flex-1 pr-1">
+            <div onclick="selectChatThread('harini')" id="thread-harini" class="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 cursor-pointer transition">
+              <p class="text-xs font-bold text-white">Harini Venkatesh</p>
+              <p class="text-[11px] text-cyan-300">Casio FX-991EX Calculator</p>
+            </div>
+            <div onclick="selectChatThread('tanvi')" id="thread-tanvi" class="p-3 rounded-2xl bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 cursor-pointer transition">
+              <p class="text-xs font-bold text-white">Tanvi Sharma</p>
+              <p class="text-[11px] text-cyan-300">Milan 2026 Pro-Nite VIP Pass</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-1 flex flex-col bg-[#070a12]">
+          <div class="p-3 bg-cyan-950/40 border-b border-cyan-500/20 flex items-center justify-between shrink-0">
+            <div>
+              <p id="chatItemTitle" class="text-xs font-black text-white">Casio FX-991EX Solar Scientific Calculator</p>
+              <p id="chatItemMeta" class="text-[10px] text-cyan-300 font-bold">Listed by Harini Venkatesh · ✓ Verified SRM Student · ₹650</p>
+            </div>
+            <button onclick="triggerCompleteExchangeDemo()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-black font-extrabold text-[11px] shadow transition">
+              🎉 Complete Exchange (+150 XP)
+            </button>
+          </div>
+
+          <div id="chatMessagesContainer" class="flex-1 overflow-y-auto p-4 space-y-3">
+            <div class="chat-bubble-buyer p-3 max-w-md">
+              <p class="text-xs font-bold text-slate-400 text-[10px]">Harini Venkatesh • 3:40 PM</p>
+              <p class="text-xs text-slate-200 mt-1">Hey Ayan! The Casio FX-991EX calculator is in mint condition with battery backup.</p>
+            </div>
+            <div class="chat-bubble-seller p-3 max-w-md ml-auto text-right">
+              <p class="text-xs font-bold text-cyan-300 text-[10px]">You • 3:43 PM</p>
+              <p class="text-xs text-white mt-1">Great! Can we meet at UB Ground Floor Lobby near Nescafe at 4:15 PM?</p>
+            </div>
+          </div>
+
+          <div class="p-3 border-t border-white/5 bg-[#090c14] flex items-center gap-2 shrink-0">
+            <input type="text" id="chatInputBox" placeholder="Type a message..." class="rex-input text-xs flex-1" onkeypress="if(event.key==='Enter') sendChatMessage()">
+            <button onclick="sendChatMessage()" class="px-4 py-2 rounded-xl bg-cyan-400 text-black font-extrabold text-xs shadow transition">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <!--                 VIEW 8: CAMPUS MAP VIEW                -->
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <div id="view-map" class="animate-view p-4 sm:p-8 max-w-7xl mx-auto w-full hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-black text-white">SRMIST KTR Campus Safe Meetup Map</h2>
+        <button onclick="animateNearestExchangeRoute()" class="px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 font-extrabold text-xs">
+          Animate Route to UB Safe Spot
+        </button>
+      </div>
+      <div class="relative w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+        <div id="campusMapContainer"></div>
+      </div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <!--            VIEW 9: REPUTATION & CAMPUS IMPACT          -->
+    <!-- ═════════════════════════════════════════════════════════ -->
+    <div id="view-reputation" class="animate-view p-4 sm:p-8 max-w-6xl mx-auto w-full hidden space-y-6">
+      <div class="glass-card p-6 sm:p-8 rounded-3xl relative overflow-hidden border-cyan-400/30">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" class="w-16 h-16 rounded-2xl object-cover border-2 border-cyan-400 shadow-xl">
+            <div>
+              <h3 class="text-xl font-black text-white">Ayan Saha <span class="text-cyan-400 text-sm">✓ Verified SRM Student</span></h3>
+              <p class="text-xs text-slate-400 font-mono">Reg No: RA2311003010001 · CSE Core 1st Year · Paari Hostel</p>
+              <p class="text-xs text-cyan-300 font-extrabold mt-1">Level 12 — Campus Connector • ⭐ <span id="repKarmaDisplay">1,240</span> XP</p>
+            </div>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-cyan-500/10 border border-cyan-400/40 text-center">
+            <span class="text-[10px] font-black text-slate-400 uppercase">REX Score</span>
+            <p class="text-3xl font-black text-cyan-400">92<span class="text-xs text-slate-400">/100</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-impact" class="animate-view p-4 sm:p-8 max-w-6xl mx-auto w-full hidden space-y-6">
+      <h2 class="text-2xl font-black text-white">REX Campus Sustainability Impact</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="glass-card p-5 border-emerald-500/30">
+          <p class="text-xs text-slate-400 font-bold">♻️ Items Reused</p>
+          <p class="text-3xl font-black text-emerald-400 mt-1">1,843</p>
+        </div>
+        <div class="glass-card p-5 border-amber-500/30">
+          <p class="text-xs text-slate-400 font-bold">💰 Student Money Saved</p>
+          <p class="text-3xl font-black text-amber-400 mt-1">₹3,40,650</p>
+        </div>
+        <div class="glass-card p-5 border-cyan-500/30">
+          <p class="text-xs text-slate-400 font-bold">📚 Resources Shared</p>
+          <p class="text-3xl font-black text-cyan-400 mt-1">629</p>
+        </div>
+        <div class="glass-card p-5 border-purple-500/30">
+          <p class="text-xs text-slate-400 font-bold">🌱 Waste Avoided</p>
+          <p class="text-3xl font-black text-purple-400 mt-1">416.2 kg</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-leaderboard" class="animate-view p-4 sm:p-8 max-w-5xl mx-auto w-full hidden space-y-4">
+      <h2 class="text-2xl font-black text-white">SRMIST KTR Campus Leaderboard</h2>
+      <div class="glass-card overflow-hidden" id="leaderboardContainer"></div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--               3. COMPACT MOBILE BOTTOM NAV                 -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#090c14]/95 backdrop-blur-2xl border-t border-white/10 px-3 py-2 flex items-center justify-around text-slate-400 text-[10px] font-bold select-none">
+    <button onclick="showView('home')" id="mob-home" class="flex flex-col items-center gap-1 text-cyan-400">
+      <i data-lucide="home" class="w-4 h-4"></i> <span>Feed</span>
+    </button>
+    <button onclick="showView('smart-match')" id="mob-smart-match" class="flex flex-col items-center gap-1">
+      <i data-lucide="sparkles" class="w-4 h-4"></i> <span>Match</span>
+    </button>
+    <button onclick="showView('tickets')" id="mob-tickets" class="flex flex-col items-center gap-1 text-rose-400">
+      <i data-lucide="ticket" class="w-4 h-4"></i> <span>Tickets</span>
+    </button>
+    <button onclick="showView('messages')" id="mob-messages" class="flex flex-col items-center gap-1">
+      <i data-lucide="message-square" class="w-4 h-4"></i> <span>Chat</span>
+    </button>
+    <button onclick="openREXAIDrawer()" class="flex flex-col items-center gap-1 text-cyan-300">
+      <i data-lucide="bot" class="w-4 h-4"></i> <span>AI</span>
+    </button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--             4. 🤖 FLOATING REX AI ASSISTANT FAB            -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <button onclick="openREXAIDrawer()" class="rex-ai-fab ai-orb-pulse shadow-2xl" title="Chat with REX AI Assistant">
+    <i data-lucide="bot" class="w-7 h-7 text-black"></i>
+  </button>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--                        MODALS                              -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+
+  <!-- 🎉 CELEBRATORY EXCHANGE COMPLETE MODAL -->
+  <div id="exchangeCompleteCelebrationModal" class="fixed inset-0 z-[60] modal-backdrop hidden items-center justify-center p-4">
+    <div class="bg-[#090c14] border border-cyan-400/50 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative text-center">
+      <div class="inline-block px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 mb-3">
+        EXCHANGE COMPLETE
+      </div>
+      <p class="text-4xl sm:text-5xl font-black text-transparent bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-200 bg-clip-text">
+        🎉 +150 XP
+      </p>
+      <div class="my-5 p-3.5 bg-white/[0.03] border border-white/10 rounded-2xl flex items-center justify-around font-black text-xs text-white">
+        <span>👨‍🎓 Ayan Saha</span>
+        <span class="text-cyan-400">← 🤝 →</span>
+        <span>👩‍🎓 Harini Venkatesh</span>
+      </div>
+      <button onclick="closeModal('exchangeCompleteCelebrationModal'); showView('impact');" class="w-full py-3 bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-black rounded-xl text-xs shadow-lg transition">
+        View Updated Campus Impact →
+      </button>
+    </div>
+  </div>
+
+  <!-- "I HAVE A TICKET" MODAL -->
+  <div id="haveTicketModal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
+    <div class="bg-[#090c14] border border-cyan-400/30 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+      <button onclick="closeModal('haveTicketModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      <div class="flex items-center gap-2.5 mb-4">
+        <div class="w-9 h-9 rounded-2xl bg-cyan-500/20 flex items-center justify-center"><i data-lucide="ticket" class="w-5 h-5 text-cyan-400"></i></div>
+        <div>
+          <h3 class="text-base font-black text-white">List an Extra Ticket</h3>
+          <p class="text-xs text-slate-400">REX AI parses ticket details & suggests fair student prices</p>
+        </div>
+      </div>
+
+      <form onsubmit="handleCreateTicketSubmit(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Event Name *</label>
+          <input type="text" id="ticketEventName" required placeholder="e.g. Milan Day 3 Pro-Nite VIP Pass" class="rex-input text-xs">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Category</label>
+            <select id="ticketCategory" class="rex-input text-xs">
+              <option value="Concerts">🎤 Concerts</option>
+              <option value="Sports">🏆 Sports</option>
+              <option value="Workshops">📚 Workshops</option>
+              <option value="Gaming Events">🎮 Gaming</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Asking Price (₹)</label>
+            <input type="number" id="ticketAskingPrice" value="450" class="rex-input text-xs">
+          </div>
+        </div>
+        <button type="submit" class="w-full py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-black text-xs shadow-lg transition">
+          Publish Ticket (+25 XP) 🎟️
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- "POST A NEED" DEMAND CREATION MODAL -->
+  <div id="createDemandModal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
+    <div class="bg-[#090c14] border border-amber-400/30 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative">
+      <button onclick="closeModal('createDemandModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      <h3 class="text-base font-black text-white mb-2">Post a Need ("Need Something?")</h3>
+      <form onsubmit="handleCreateDemandSubmit(event)" class="space-y-3">
+        <input type="text" id="demandItem" required placeholder="e.g. Engineering Mathematics Notes (18MAT201J)" class="rex-input text-xs">
+        <button type="submit" class="w-full py-3 rounded-2xl bg-amber-400 text-black font-black text-xs shadow-lg transition">
+          Broadcast Need 🎯
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- CREATE LISTING MODAL -->
+  <div id="createListingModal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
+    <div class="bg-[#090c14] border border-cyan-400/30 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+      <button onclick="closeModal('createListingModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      <h3 class="text-base font-black text-white mb-3">AI Auto-Listing Generator</h3>
+      <form onsubmit="handleCreateListingSubmit(event)" class="space-y-3">
+        <input type="text" id="createTitle" required placeholder="e.g. Casio FX-991EX Calculator" class="rex-input text-xs">
+        <input type="number" id="createPrice" value="0" class="rex-input text-xs" placeholder="Price (₹)">
+        <textarea id="createDescription" rows="2.5" required placeholder="Description..." class="rex-input text-xs"></textarea>
+        <button type="submit" class="w-full py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-black text-xs shadow-lg transition">
+          Publish Listing (+25 XP) 🚀
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- REX AI Drawer Modal -->
+  <div id="rexAIDrawerModal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
+    <div class="bg-[#090c14] border border-cyan-400/30 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative flex flex-col max-h-[90vh]">
+      <button onclick="closeModal('rexAIDrawerModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      <div class="flex items-center gap-3 mb-4 shrink-0">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/30">
+          <i data-lucide="bot" class="w-5 h-5 text-black"></i>
+        </div>
+        <div>
+          <h3 class="text-base font-black text-white">REX AI Assistant 🤖</h3>
+          <p class="text-xs text-cyan-300">Scanning SRMIST KTR campus network</p>
+        </div>
+      </div>
+      <div id="rexAIChatBox" class="flex-1 overflow-y-auto p-3 rounded-2xl bg-[#06080d] border border-white/5 space-y-2 mb-3">
+        <div class="p-3 bg-cyan-950/40 border border-cyan-500/20 rounded-2xl text-xs text-slate-200 leading-relaxed">
+          👋 Hi Ayan! REX can search notes, calculators, fest passes, calculate fair prices, and lock 24/7 CCTV safe spots like <strong>UB Ground Floor Lobby</strong>.
+        </div>
+      </div>
+      <div class="flex gap-2 shrink-0">
+        <input type="text" id="rexAIChatInput" placeholder="Ask REX anything..." class="rex-input text-xs flex-1" onkeypress="if(event.key==='Enter') sendREXMessage()">
+        <button onclick="sendREXMessage()" class="px-4 py-2 rounded-xl bg-cyan-400 text-black font-extrabold text-xs shadow transition">Ask</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profileModal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
+    <div class="bg-[#090c14] border border-cyan-400/30 rounded-3xl max-w-md w-full p-6 shadow-2xl relative text-center">
+      <button onclick="closeModal('profileModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" class="w-20 h-20 rounded-2xl mx-auto object-cover border-2 border-cyan-400 shadow-xl mb-3">
+      <h3 class="text-lg font-black text-white">Ayan Saha <span class="text-cyan-400 text-sm">✓</span></h3>
+      <p class="text-xs text-slate-400 font-mono">RA2311003010001 · CSE Core 1st Year</p>
+      <button onclick="closeModal('profileModal');" class="w-full py-2 mt-3 rounded-xl bg-white/5 text-slate-300 text-xs font-bold transition">Close</button>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-[70] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- App Logic -->
+  <script src="/static/app.js?v=9.1.0"></script>
+</body>
+</html>
